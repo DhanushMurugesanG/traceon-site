@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TraceOn — runtime verification for AI coding agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // Tailwind config — design tokens at the top, easy to tune.
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          // near-black with the faintest cool tone, not muddy gray
+          ink: {
+            950: '#08090b',
+            900: '#0b0c0f',
+            850: '#0f1115',
+            800: '#14171c',
+            750: '#1a1e24',
+            700: '#23282f',
+            600: '#31373f',
+            500: '#4a525c',
+            400: '#6b737d',
+            300: '#9aa1aa',
+            200: '#c4c8ce',
+            100: '#e4e6e9',
+            50:  '#f3f4f6',
+          },
+          // single desaturated sage accent — Linear-ish calm
+          sage: {
+            DEFAULT: '#8eb29a',
+            soft: '#a8c4b2',
+            dim:  '#5e7d6a',
+            deep: '#2f4438',
+            wash: 'rgba(142,178,154,0.08)',
+          },
+          // paper for light mode
+          paper: {
+            50: '#fafaf9',
+            100: '#f4f4f2',
+            200: '#e8e8e4',
+          },
+        },
+        fontFamily: {
+          sans: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        },
+        letterSpacing: {
+          tightest: '-0.03em',
+          tighter:  '-0.025em',
+          tightish: '-0.018em',
+        },
+        maxWidth: {
+          'col':  '760px',
+          'wide': '1320px',
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* selection */
+  ::selection { background: rgba(142,178,154,0.35); color: inherit; }
+
+  /* subtle dot grid for hero bg */
+  .dotgrid {
+    background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -14px -14px;
+  }
+  .dotgrid-light {
+    background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -14px -14px;
+  }
+
+  /* hairline */
+  .hairline { border-color: rgba(255,255,255,0.08); }
+  .hairline-light { border-color: rgba(0,0,0,0.08); }
+
+  /* code block */
+  pre, code { font-feature-settings: 'calt' 0; }
+
+  /* animation keyframes used by the hero diagram */
+  @keyframes pulseDot {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+  @keyframes caret {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .caret { animation: caret 1s steps(1) infinite; }
+
+  /* nav border-bottom appears only after hero leaves viewport */
+  .nav-shell { transition: border-color 200ms ease, background-color 200ms ease, backdrop-filter 200ms ease; }
+  .nav-shell.scrolled { border-color: rgba(255,255,255,0.08); background: rgba(8,9,11,0.72); backdrop-filter: blur(12px); }
+  html.light .nav-shell.scrolled { border-color: rgba(0,0,0,0.08); background: rgba(250,250,249,0.72); }
+
+  /* link underline reveal */
+  .ulink { position: relative; }
+  .ulink::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 1px; background: currentColor; opacity: 0;
+    transform: scaleX(0.4); transform-origin: left;
+    transition: opacity 180ms ease, transform 240ms ease;
+  }
+  .ulink:hover::after { opacity: 0.6; transform: scaleX(1); }
+
+  /* button */
+  .btn-primary {
+    background: #8eb29a; color: #0b0c0f;
+    transition: transform 120ms ease, background 180ms ease, box-shadow 200ms ease;
+  }
+  .btn-primary:hover { background: #a8c4b2; box-shadow: 0 0 0 4px rgba(142,178,154,0.12); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  .btn-ghost {
+    border: 1px solid rgba(255,255,255,0.12); color: inherit;
+    transition: background 160ms ease, border-color 160ms ease;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.22); }
+  html.light .btn-ghost { border-color: rgba(0,0,0,0.12); }
+  html.light .btn-ghost:hover { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.22); }
+
+  /* copy chip */
+  .copy-chip {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .copy-chip:hover { border-color: rgba(142,178,154,0.4); background: rgba(142,178,154,0.04); }
+  html.light .copy-chip { background: rgba(0,0,0,0.025); border-color: rgba(0,0,0,0.08); }
+  html.light .copy-chip:hover { border-color: rgba(94,125,106,0.45); background: rgba(142,178,154,0.06); }
+
+  /* faint section divider */
+  .div-hairline { height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.10), transparent); }
+  html.light .div-hairline { background: linear-gradient(to right, transparent, rgba(0,0,0,0.10), transparent); }
+
+  /* JSON highlight colors */
+  .tok-key   { color: #c4c8ce; }
+  .tok-str   { color: #a8c4b2; }
+  .tok-num   { color: #c9a87a; }
+  .tok-bool  { color: #b48ec0; }
+  .tok-null  { color: #6b737d; }
+  .tok-punct { color: #4a525c; }
+  html.light .tok-key   { color: #31373f; }
+  html.light .tok-str   { color: #3f6650; }
+  html.light .tok-num   { color: #8a6320; }
+  html.light .tok-bool  { color: #76558a; }
+  html.light .tok-null  { color: #6b737d; }
+  html.light .tok-punct { color: #9aa1aa; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
+
+  /* base bg */
+  body { background: #08090b; color: #e4e6e9; }
+  html.light body { background: #fafaf9; color: #14171c; }
+
+  /* light-mode helpers */
+  html.light .text-ink-300 { color: #4a525c !important; }
+  html.light .text-ink-400 { color: #6b737d !important; }
+  html.light .text-ink-200 { color: #14171c !important; }
+  html.light .text-ink-100 { color: #08090b !important; }
+  html.light .bg-ink-900   { background: #fafaf9 !important; }
+  html.light .bg-ink-850   { background: #f4f4f2 !important; }
+  html.light .bg-ink-800   { background: #e8e8e4 !important; }
+  html.light .bg-ink-950   { background: #fafaf9 !important; }
+  html.light .border-white\/10 { border-color: rgba(0,0,0,0.10) !important; }
+  html.light .border-white\/5  { border-color: rgba(0,0,0,0.06) !important; }
+  html.light .bg-white\/5      { background: rgba(0,0,0,0.025) !important; }
+  html.light .bg-white\/10     { background: rgba(0,0,0,0.05) !important; }
+
+  /* loop pulse */
+  @keyframes loopPulse {
+    0%, 100% { stroke-opacity: 0.15; }
+    50%      { stroke-opacity: 0.55; }
+  }
+
+  /* shimmer for muted "Without TraceOn" column */
+  .muted-col { opacity: 0.62; }
+
+  /* hero glow behind diagram */
+  .diagram-glow {
+    background: radial-gradient(60% 50% at 50% 50%, rgba(142,178,154,0.12), transparent 70%);
+  }
+  html.light .diagram-glow {
+    background: radial-gradient(60% 50% at 50% 50%, rgba(94,125,106,0.12), transparent 70%);
+  }
+
+  /* logomark dot */
+  .wordmark-dot {
+    width: 8px; height: 8px; border-radius: 1px;
+    background: #8eb29a; display: inline-block; transform: rotate(45deg);
+    box-shadow: 0 0 0 1px rgba(142,178,154,0.25), 0 0 12px rgba(142,178,154,0.45);
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="hero-loop.jsx"></script>
+  <script type="text/babel" src="sections.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
