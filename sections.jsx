@@ -819,6 +819,105 @@ function ChatPromptExample({ lines }) {
   );
 }
 
+/* ============== Handy kit ==============
+ * Field notes from real first-runs on production-shaped apps. The kind of
+ * setup gotchas that don't fit the 5-step stepper but will save the next
+ * person an hour of debugging.
+ */
+
+function HandyKit() {
+  return (
+    <section className="py-24 lg:py-32 relative">
+      <div className="absolute inset-x-0 top-0 div-hairline max-w-wide mx-auto"></div>
+      <ContentRail label="Handy kit">
+        <h2 className="text-[28px] lg:text-[34px] leading-[1.15] tracking-tighter font-medium mb-3">
+          Three things that'll save you an hour.
+        </h2>
+        <p className="text-[15px] text-ink-400 mb-12">
+          Field notes from real first-runs on production-shaped apps.
+        </p>
+
+        <div className="grid lg:grid-cols-3 gap-4">
+
+          {/* Tip 1 — OrbStack */}
+          <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
+            <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
+              tip 01 · performance
+            </div>
+            <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
+              Skip Docker Desktop. Use OrbStack.
+            </h3>
+            <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
+              Docker Desktop on Mac burns ~3&nbsp;GB RAM idle and slows the whole
+              machine. OrbStack is a drop-in replacement that's roughly 10× lighter
+              — SigNoz runs the same, everything else just feels snappier.
+            </p>
+            <div className="mt-4 rounded-md border border-white/5 bg-ink-950 px-3 py-2 mono text-[12px] text-ink-100 overflow-x-auto">
+              <span className="text-ink-500 select-none mr-2">$</span>
+              brew install --cask orbstack
+            </div>
+            <a href="https://orbstack.dev" target="_blank" rel="noopener"
+               className="mt-4 mono text-[12px] text-ink-300 hover:text-sage transition-colors inline-flex items-center gap-1.5">
+              orbstack.dev <span aria-hidden>→</span>
+            </a>
+          </div>
+
+          {/* Tip 2 — CORS traceparent */}
+          <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
+            <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
+              tip 02 · cross-origin
+            </div>
+            <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
+              Allow <span className="mono text-sage">traceparent</span> in your backend's CORS.
+            </h3>
+            <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
+              If frontend and backend live on different origins, the browser blocks
+              every request the TraceOn fixture tries to inject the trace header
+              into — unless the backend lists it in <span className="mono text-ink-100">Access-Control-Allow-Headers</span>.
+              Without this, TraceOn sees zero backend spans even though the UI looks fine.
+            </p>
+            <div className="mt-4 rounded-md border border-white/5 bg-ink-950 px-3 py-2 mono text-[11.5px] text-ink-100 overflow-x-auto leading-[1.55] whitespace-pre">
+{`AllowedHeaders: [
+  "Content-Type", "Authorization",
+  "traceparent", "tracestate"
+]`}
+            </div>
+            <a href="https://github.com/DhanushMurugesanG/TraceOn/blob/main/docs/auth-and-cors-setup.md"
+               target="_blank" rel="noopener"
+               className="mt-4 mono text-[12px] text-ink-300 hover:text-sage transition-colors inline-flex items-center gap-1.5">
+              Full CORS guide <span aria-hidden>→</span>
+            </a>
+          </div>
+
+          {/* Tip 3 — JWT inline for auth */}
+          <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
+            <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
+              tip 03 · auth
+            </div>
+            <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
+              Inline a JWT for protected routes.
+            </h3>
+            <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
+              If your test route is behind a login, the agent will ask for a fresh
+              JWT. Inline it directly in the test — env vars don't reliably reach
+              Playwright through TraceOn's runner. The skill knows the common
+              <span className="mono text-ink-100"> localStorage</span> keys
+              (<span className="mono">kc-token</span>, <span className="mono">access_token</span>,
+              {' '}<span className="mono">user</span>, <span className="mono">account</span>).
+            </p>
+            <a href="https://github.com/DhanushMurugesanG/TraceOn/blob/main/docs/auth-and-cors-setup.md#1-auth-protected-backends"
+               target="_blank" rel="noopener"
+               className="mt-4 mono text-[12px] text-ink-300 hover:text-sage transition-colors inline-flex items-center gap-1.5">
+              Auth setup guide <span aria-hidden>→</span>
+            </a>
+          </div>
+
+        </div>
+      </ContentRail>
+    </section>
+  );
+}
+
 /* ============== Honest limits ============== */
 
 function Limits() {
@@ -905,5 +1004,6 @@ window.Solution = Solution;
 window.HowItWorks = HowItWorks;
 window.Honesty = Honesty;
 window.GetStarted = GetStarted;
+window.HandyKit = HandyKit;
 window.Limits = Limits;
 window.Footer = Footer;

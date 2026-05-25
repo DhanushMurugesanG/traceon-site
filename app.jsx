@@ -18,7 +18,8 @@ function App() {
         <HowItWorks />
         <Honesty />
         <GetStarted />
-        <Limits />
+        <HandyKit />
+        {/* <Limits /> */}
       </main>
       <Footer />
     </div>
