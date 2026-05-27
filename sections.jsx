@@ -831,13 +831,13 @@ function HandyKit() {
       <div className="absolute inset-x-0 top-0 div-hairline max-w-wide mx-auto"></div>
       <ContentRail label="Handy kit">
         <h2 className="text-[28px] lg:text-[34px] leading-[1.15] tracking-tighter font-medium mb-3">
-          Three things that'll save you an hour.
+          Four things that'll save you an hour.
         </h2>
         <p className="text-[15px] text-ink-400 mb-12">
           Field notes from real first-runs on production-shaped apps.
         </p>
 
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-2 gap-4">
 
           {/* Tip 1 — OrbStack */}
           <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
@@ -889,26 +889,54 @@ function HandyKit() {
             </a>
           </div>
 
-          {/* Tip 3 — JWT inline for auth */}
+          {/* Tip 3 — auth via extra_env / .traceon/auth.json (v0.0.7+) */}
           <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
             <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
               tip 03 · auth
             </div>
             <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
-              Inline a JWT for protected routes.
+              Pass auth tokens cleanly.
             </h3>
             <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
-              If your test route is behind a login, the agent will ask for a fresh
-              JWT. Inline it directly in the test — env vars don't reliably reach
-              Playwright through TraceOn's runner. The skill knows the common
-              <span className="mono text-ink-100"> localStorage</span> keys
-              (<span className="mono">kc-token</span>, <span className="mono">access_token</span>,
-              {' '}<span className="mono">user</span>, <span className="mono">account</span>).
+              When your test route needs a login, pass the JWT via{' '}
+              <span className="mono text-ink-100">extra_env</span> on the verify
+              call (one-off) or drop it in{' '}
+              <span className="mono text-ink-100">.traceon/auth.json</span>{' '}
+              (persists across iterations — gitignore it). The agent does both
+              automatically. Inlining the JWT into the test source is legacy —
+              every token rotation means editing the test, and a fat-finger
+              commit leaks the JWT.
             </p>
             <a href="https://github.com/DhanushMurugesanG/TraceOn/blob/main/docs/auth-and-cors-setup.md#1-auth-protected-backends"
                target="_blank" rel="noopener"
                className="mt-4 mono text-[12px] text-ink-300 hover:text-sage transition-colors inline-flex items-center gap-1.5">
               Auth setup guide <span aria-hidden>→</span>
+            </a>
+          </div>
+
+          {/* Tip 4 — traceon doctor (v0.0.10+) */}
+          <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
+            <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
+              tip 04 · diagnostics
+            </div>
+            <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
+              Stuck? Run <span className="mono text-sage">traceon doctor</span>.
+            </h3>
+            <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
+              Eight preflight checks in ~10 seconds — Playwright installed,
+              every backend's CORS allows{' '}
+              <span className="mono">traceparent</span>, SigNoz reachable, MCP
+              server registered, skill in sync. Each failure has a copy-pasteable
+              fix. Read-only; never modifies your config.
+            </p>
+            <div className="mt-4 rounded-md border border-white/5 bg-ink-950 px-3 py-2 mono text-[12px] text-ink-100 overflow-x-auto">
+              <span className="text-ink-500 select-none mr-2">$</span>
+              traceon doctor
+            </div>
+            <a href="https://github.com/DhanushMurugesanG/TraceOn#troubleshooting"
+               target="_blank" rel="noopener"
+               className="mt-4 mono text-[12px] text-ink-300 hover:text-sage transition-colors inline-flex items-center gap-1.5">
+              Doctor checks reference <span aria-hidden>→</span>
             </a>
           </div>
 
