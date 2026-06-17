@@ -558,7 +558,7 @@ function Honesty() {
   );
 }
 
-/* ============== Get started — 5-card stepper ============== */
+/* ============== Get started — 4-card stepper ============== */
 
 // Design tokens for this section — easy to tune.
 const GS_TOKENS = {
@@ -653,77 +653,77 @@ function GetStarted() {
       <div className="absolute inset-x-0 top-0 div-hairline max-w-wide mx-auto"></div>
       <ContentRail label="Get started">
         <h2 className="text-[28px] lg:text-[34px] leading-[1.15] tracking-tighter font-medium mb-3">
-          Five steps. Copy and paste.
+          Four steps. Copy and paste.
         </h2>
         <p className="text-[15px] text-ink-400 mb-12">
-          You should be on your first verified change in under ten minutes.
+          No Docker, no API key. You should be on your first verified change in under ten minutes.
         </p>
 
         <div className="space-y-4">
 
           {/* === Step 1 === */}
-          <StepCard num={1} title="Start SigNoz" time="~5 min first time">
-            <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
-              TraceOn needs an observability backend. Start SigNoz locally with Docker, or point it
-              at an existing instance.
-            </p>
-            <a href="https://signoz.io/docs/install/docker/" target="_blank" rel="noopener"
-               className="mt-4 inline-flex items-center gap-2 px-3.5 py-2 rounded-md border border-white/10 hover:border-sage/40 hover:bg-sage/[0.04] transition-colors mono text-[12.5px] text-ink-100 group">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M3 8h18M3 16h18M9 4v16" />
-              </svg>
-              SigNoz Docker install guide
-              <span className="text-ink-400 group-hover:text-sage transition-colors">→</span>
-            </a>
-            <p className={`mt-4 text-[13px] leading-[1.55] ${GS_TOKENS.metaColor}`}>
-              Once it's up, generate an API key in the SigNoz UI:{' '}
-              <span className="mono text-ink-300">Settings → API Keys → Create</span>. You'll paste
-              it in step 3.
-            </p>
-          </StepCard>
-
-          {/* === Step 2 === */}
-          <StepCard num={2} title="Install the TraceOn CLI" time="~30 sec">
+          <StepCard num={1} title="Install the TraceOn CLI" time="~30 sec">
             <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
               One global install per machine.
             </p>
             <CopyBlock command="npm install -g traceon-cli" />
-            <p className={`mt-3 text-[13px] ${GS_TOKENS.metaColor}`}>
+            <p className={`mt-3 text-[13px] leading-[1.55] ${GS_TOKENS.metaColor}`}>
+              During the v0.2 shakeout you can grab the embedded-mode build with{' '}
+              <span className="mono text-ink-300">npm install -g traceon-cli@next</span>.{' '}
               <ILink href="https://www.npmjs.com/package/traceon-cli" arrow>View on npm</ILink>
             </p>
           </StepCard>
 
-          {/* === Step 3 === */}
-          <StepCard num={3} title="Initialize in your project" time="~1 min">
+          {/* === Step 2 === */}
+          <StepCard num={2} title="Initialize in your project" time="~1 min">
             <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
               Registers the MCP server with Claude Code, copies the agent skill into{' '}
               <span className="mono text-ink-100">.claude/skills/</span>, and drops a Playwright
               fixture into <span className="mono text-ink-100">tests/</span>.
             </p>
             <CopyBlock multi={['cd your-project', 'traceon init']} />
-            <p className={`mt-3 text-[13px] ${GS_TOKENS.metaColor}`}>
-              You'll be prompted for your SigNoz API key from step 1.
+            <p className={`mt-3 text-[13px] leading-[1.55] ${GS_TOKENS.metaColor}`}>
+              At the prompt, pick{' '}
+              <span className="mono text-ink-300">Embedded (recommended)</span>. TraceOn downloads
+              and runs its own OpenTelemetry collector locally on first run — no Docker, no API key.
+            </p>
+            <div className="mt-4 rounded-md border border-sage/20 bg-sage/[0.03] px-4 py-3">
+              <p className="text-[13px] leading-[1.6] text-ink-300">
+                Already run <span className="mono text-ink-100">SigNoz</span>,{' '}
+                <span className="mono text-ink-100">Tempo</span>, or another backend? Choose{' '}
+                <span className="mono text-ink-100">Bring your own backend</span> at{' '}
+                <span className="mono text-ink-100">traceon init</span> and point it at your instance
+                instead — same evidence, your infrastructure.
+              </p>
+            </div>
+          </StepCard>
+
+          {/* === Step 3 === */}
+          <StepCard num={3} title="Point your backend at TraceOn" time="~1 min">
+            <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
+              Send your backend's OpenTelemetry traces to TraceOn's local collector by setting the
+              OTLP endpoint.
+            </p>
+            <CopyBlock command="OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4319" />
+            <p className={`mt-3 text-[13px] leading-[1.55] ${GS_TOKENS.metaColor}`}>
+              Already exporting somewhere? Keep your existing exporter and add{' '}
+              <span className="mono text-ink-300">localhost:4319</span> as a second target — the
+              dual-exporter pattern — so your traces still flow everywhere they did before.
             </p>
           </StepCard>
 
           {/* === Step 4 === */}
-          <StepCard num={4} title="Restart Claude Code" time="~10 sec">
+          <StepCard num={4} title="Restart Claude Code, then ask" time="~3–5 min for first feature">
             <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
-              Fully quit and reopen — close-window doesn't reload MCP servers.
+              Fully quit and reopen — close-window doesn't reload MCP servers. Then ask Claude to add
+              a feature and make sure it works. Claude writes the test, calls{' '}
+              <span className="mono text-ink-100">traceon_verify</span>, reads runtime evidence,
+              iterates on any failures, and tells you what was verified.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <KbdPill keys={['⌘', 'Q']} label="macOS" />
               <KbdPill keys={['Ctrl', 'Q']} label="Linux" />
             </div>
-          </StepCard>
-
-          {/* === Step 5 === */}
-          <StepCard num={5} title="Ask Claude to add a feature" time="~3–5 min for first feature">
-            <p className={`text-[14.5px] leading-[1.6] ${GS_TOKENS.descColor} mt-2`}>
-              TraceOn handles the verification loop. Claude writes the test, calls{' '}
-              <span className="mono text-ink-100">traceon_verify</span>, reads runtime evidence,
-              iterates on any failures, and tells you what was verified.
-            </p>
             <ChatPromptExample
               lines={[
                 'Add a character counter under the textarea on the home page.',
@@ -750,8 +750,8 @@ function GetStarted() {
             <li className="flex items-baseline gap-3">
               <span className="mono text-sage/70 text-[12px] mt-0.5 select-none">▸</span>
               <span>
-                <ILink href="https://www.docker.com/products/docker-desktop/">Docker</ILink>
-                <span className="text-ink-300">, or an existing SigNoz instance</span>
+                <span className="text-ink-100">Embedded collector — bundled</span>
+                <span className="text-ink-300">, or bring your own SigNoz / Tempo</span>
                 <span className="text-ink-500 mono text-[12px]">  · observability backend</span>
               </span>
             </li>
@@ -821,7 +821,7 @@ function ChatPromptExample({ lines }) {
 
 /* ============== Handy kit ==============
  * Field notes from real first-runs on production-shaped apps. The kind of
- * setup gotchas that don't fit the 5-step stepper but will save the next
+ * setup gotchas that don't fit the 4-step stepper but will save the next
  * person an hour of debugging.
  */
 
@@ -839,18 +839,19 @@ function HandyKit() {
 
         <div className="grid lg:grid-cols-2 gap-4">
 
-          {/* Tip 1 — OrbStack */}
+          {/* Tip 1 — OrbStack (only relevant if you bring your own SigNoz) */}
           <div className="rounded-lg border border-white/10 bg-ink-900 p-6 lg:p-7 flex flex-col">
             <div className="mono text-[10.5px] tracking-[0.14em] uppercase text-sage mb-3">
-              tip 01 · performance
+              tip 01 · bring-your-own backend
             </div>
             <h3 className="text-[17px] lg:text-[18px] leading-[1.3] tracking-tightish font-medium text-ink-100 mb-3">
-              Skip Docker Desktop. Use OrbStack.
+              Running SigNoz? Use OrbStack, not Docker Desktop.
             </h3>
             <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
-              Docker Desktop on Mac burns ~3&nbsp;GB RAM idle and slows the whole
-              machine. OrbStack is a drop-in replacement that's roughly 10× lighter
-              — SigNoz runs the same, everything else just feels snappier.
+              Embedded mode needs no Docker at all. But if you bring your own
+              SigNoz, Docker Desktop on Mac burns ~3&nbsp;GB RAM idle and slows the
+              whole machine. OrbStack is a drop-in replacement that's roughly 10×
+              lighter — SigNoz runs the same, everything else just feels snappier.
             </p>
             <div className="mt-4 rounded-md border border-white/5 bg-ink-950 px-3 py-2 mono text-[12px] text-ink-100 overflow-x-auto">
               <span className="text-ink-500 select-none mr-2">$</span>
@@ -925,8 +926,9 @@ function HandyKit() {
             <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
               Eight preflight checks in ~10 seconds — Playwright installed,
               every backend's CORS allows{' '}
-              <span className="mono">traceparent</span>, SigNoz reachable, MCP
-              server registered, skill in sync. Each failure has a copy-pasteable
+              <span className="mono">traceparent</span>, the trace backend is
+              reachable (embedded collector or your SigNoz), MCP server
+              registered, skill in sync. Each failure has a copy-pasteable
               fix. Read-only; never modifies your config.
             </p>
             <div className="mt-4 rounded-md border border-white/5 bg-ink-950 px-3 py-2 mono text-[12px] text-ink-100 overflow-x-auto">
@@ -951,8 +953,8 @@ function HandyKit() {
 function Limits() {
   const lines = [
     <>
-      <span className="text-ink-100">SigNoz only in v1.</span>{' '}
-      Other observability backends are designed for but not shipped.
+      <span className="text-ink-100">Two backends today: embedded + SigNoz.</span>{' '}
+      Tempo, Jaeger, Datadog, and Honeycomb are designed for but not yet shipped.
     </>,
     <>
       <span className="text-ink-100">macOS and Linux only.</span>{' '}

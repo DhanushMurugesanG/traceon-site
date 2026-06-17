@@ -441,7 +441,7 @@ function HeroLoop() {
 
         {/* === APP + SIGNOZ plane === */}
         <Plane x={CX - 175} y={430} w={350} h={130}
-               label="Your app · SigNoz" sub="otel · localhost:3301"
+               label="Your app · TraceOn" sub="otlp · :4319"
                active={appActive}>
           {/* service nodes */}
           <g transform="translate(20, 28)">
