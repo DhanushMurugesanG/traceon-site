@@ -668,8 +668,7 @@ function GetStarted() {
             </p>
             <CopyBlock command="npm install -g traceon-cli" />
             <p className={`mt-3 text-[13px] leading-[1.55] ${GS_TOKENS.metaColor}`}>
-              During the v0.2 shakeout you can grab the embedded-mode build with{' '}
-              <span className="mono text-ink-300">npm install -g traceon-cli@next</span>.{' '}
+              Embedded mode — no Docker, no API key.{' '}
               <ILink href="https://www.npmjs.com/package/traceon-cli" arrow>View on npm</ILink>
             </p>
           </StepCard>
