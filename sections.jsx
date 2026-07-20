@@ -923,8 +923,8 @@ function HandyKit() {
               Stuck? Run <span className="mono text-sage">traceon doctor</span>.
             </h3>
             <p className="text-[14px] leading-[1.6] text-ink-300 flex-1">
-              Eight preflight checks in ~10 seconds — Playwright installed,
-              every backend's CORS allows{' '}
+              Nine preflight checks in ~10 seconds — Playwright installed,
+              Chromium actually launches, every backend's CORS allows{' '}
               <span className="mono">traceparent</span>, the trace backend is
               reachable (embedded collector or your SigNoz), MCP server
               registered, skill in sync. Each failure has a copy-pasteable
